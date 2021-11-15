@@ -1,10 +1,4 @@
-parallelism: 2
-          delay: 5s
-          order: start-first
-    depends_on:
-      - config-server
-      - discovery-server
-    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "-Djava.security.egversion: '3.8'
+version: '3.8'
 
 services:
   config-server:
@@ -29,7 +23,13 @@ services:
     deploy:
       replicas: 3
       update_config:
-      d=file:/dev/./urandom","-jar","/app.jar"]
+          parallelism: 2
+          delay: 5s
+          order: start-first
+    depends_on:
+      - config-server
+      - discovery-server
+    entrypoint: ["./dockerize","-wait=tcp://discovery-server:8761","-timeout=60s","--","java", "-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
     networks:
       - clarusnet
     ports:
